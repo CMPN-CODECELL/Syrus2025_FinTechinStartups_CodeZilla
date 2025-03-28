@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
+import { v4 as uuid } from "uuid";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useSamuelEventListenr } from "@/hooks/useSamuelEventListener";
-import { getSamuelConfig, getSamuelContext, getSamuelUser } from "@/lib/utils";
+import { getSamuelConfig, getSamuelUser } from "@/lib/utils";
 import axios from "axios";
 import "tailwindcss/tailwind.css";
 
@@ -15,7 +16,6 @@ export const UptiqWidget = () => {
 
   const config = getSamuelConfig();
   const user = getSamuelUser();
-  const context = getSamuelContext();
 
   useEffect(() => {
     setTimeout(() => setShowSplash(false), 3000);
@@ -31,20 +31,35 @@ export const UptiqWidget = () => {
     if (!input.trim()) return;
     setMessages((prev) => [...prev, { text: input, sender: "user" }]);
     try {
+      const executionId = uuid();
+      const { appId, serverUrl, widgetKey } = config;
+      const workflowId = "testWorkflowId";
+      if (!workflowId) throw new Error("workflowId is required");
       const response = await axios.post(
-        `${config.serverUrl}/agent/chat`,
+        `${serverUrl}?status=Active&appId=installation-app-ai-persona-commercial-loan-origination-agent-1738934817633-version-2-account-27f00ca4-8ece-40d6-9260-643f86809fe9`,
         {
-          userId: user.uid,
-          message: input,
-          context,
+          integrationId: workflowId,
+          uid: [user.uid],
+          context: {
+        uid: user.uid,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email
+          },
+          executionId,
+          userInput: input,
         },
         {
-          headers: { Authorization: `Bearer ${config.widgetKey}` },
+          headers: {
+        "Content-Type": "application/json",
+        widgetKey,
+        appid: appId,
+          },
         }
       );
       setMessages((prev) => [
         ...prev,
-        { text: response.data.reply, sender: "ai" },
+        { text: response.data?.reply || "No reply", sender: "ai" },
       ]);
     } catch (error) {
       setMessages((prev) => [
@@ -71,23 +86,23 @@ export const UptiqWidget = () => {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8 }}
         >
-          <div className="mx-auto max-w-2xl">
+          <div className="mx-auto max-w-full md:max-w-4xl">
             <Card className="bg-[#f5f5f5] shadow-md rounded-lg border border-gray-300 p-4">
               <CardContent>
-                <div className="mb-4">
+                <div className="w-full inline-flex">
                   <Input
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     placeholder="What finanical help do you need?"
-                    className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
+                    className="w-11/12 mr-4 border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
                   />
-                </div>
-                <Button
+                  <Button
                   onClick={sendMessage}
-                  className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition"
-                >
+                  className="bg-green-500 text-white px-4 rounded-md hover:bg-green-600 transition"
+                  >
                   Send
                 </Button>
+                </div>
               </CardContent>
             </Card>
             <div className="mt-4 space-y-2 max-h-64 overflow-y-auto">

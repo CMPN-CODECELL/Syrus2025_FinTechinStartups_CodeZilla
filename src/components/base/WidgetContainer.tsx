@@ -11,7 +11,7 @@ export const WidgetContainer = ({ children }: WidgetContainerProps) => {
         display: "flex",
         flexDirection: "column",
         width: "100%",
-        overflow: "hidden",
+        overflow: "auto",
       }}
     >
       {children}
