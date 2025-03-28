@@ -31,35 +31,12 @@ export const UptiqWidget = () => {
     if (!input.trim()) return;
     setMessages((prev) => [...prev, { text: input, sender: "user" }]);
     try {
-      const executionId = uuid();
-      const { appId, serverUrl, widgetKey } = config;
       const workflowId = "testWorkflowId";
       if (!workflowId) throw new Error("workflowId is required");
-      const response = await axios.post(
-        `${serverUrl}?status=Active&appId=installation-app-ai-persona-commercial-loan-origination-agent-1738934817633-version-2-account-27f00ca4-8ece-40d6-9260-643f86809fe9`,
-        {
-          integrationId: workflowId,
-          uid: [user.uid],
-          context: {
-        uid: user.uid,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email
-          },
-          executionId,
-          userInput: input,
-        },
-        {
-          headers: {
-        "Content-Type": "application/json",
-        widgetKey,
-        appid: appId,
-          },
-        }
-      );
+      const response = "Hello! Nice to meet you!";
       setMessages((prev) => [
         ...prev,
-        { text: response.data?.reply || "No reply", sender: "ai" },
+        { text: response || "No reply", sender: "ai" },
       ]);
     } catch (error) {
       setMessages((prev) => [
