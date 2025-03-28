@@ -1,1 +1,1 @@
-export { FirstWidget } from "./FirstWidget";
+export { UptiqWidget } from "./FirstWidget";

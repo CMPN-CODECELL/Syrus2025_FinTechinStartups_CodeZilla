@@ -1,54 +1,113 @@
+import { useState, useEffect, useCallback } from "react";
+import { motion } from "framer-motion";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { useSamuelEventListenr } from "@/hooks/useSamuelEventListener";
 import { getSamuelConfig, getSamuelContext, getSamuelUser } from "@/lib/utils";
-import { useCallback } from "react";
-import { TestFormDialog } from "./TestFormDialog";
+import axios from "axios";
+import "tailwindcss/tailwind.css";
 
-export const FirstWidget = () => {
-  // sample accessing samuel related config
-  // this config can be used to some specific actions related to passed context, user etc.
+export const UptiqWidget = () => {
+  const [showSplash, setShowSplash] = useState(true);
+  const [messages, setMessages] = useState<{ text: string; sender: string }[]>([]);
+  const [input, setInput] = useState("");
+
   const config = getSamuelConfig();
   const user = getSamuelUser();
   const context = getSamuelContext();
-  console.log({ config, user, context });
 
-  // samuel event handler function
-  const handleEvent = useCallback((eventData: any) => {
-    // do something with the event data which is emitted along with the event from the workflow
-    console.log(eventData);
+  useEffect(() => {
+    setTimeout(() => setShowSplash(false), 3000);
   }, []);
 
-  // listening to samuel events
-  // here 'test-event' is emitted event from workflow change it accordingly.
+  const handleEvent = useCallback((eventData: any) => {
+    setMessages((prev) => [...prev, { text: eventData.message, sender: "system" }]);
+  }, []);
+
   useSamuelEventListenr("test-event", handleEvent);
 
+  const sendMessage = async () => {
+    if (!input.trim()) return;
+    setMessages((prev) => [...prev, { text: input, sender: "user" }]);
+    try {
+      const response = await axios.post(
+        `${config.serverUrl}/agent/chat`,
+        {
+          userId: user.uid,
+          message: input,
+          context,
+        },
+        {
+          headers: { Authorization: `Bearer ${config.widgetKey}` },
+        }
+      );
+      setMessages((prev) => [
+        ...prev,
+        { text: response.data.reply, sender: "ai" },
+      ]);
+    } catch (error) {
+      setMessages((prev) => [
+        ...prev,
+        { text: "Error communicating with AI agent.", sender: "system" },
+      ]);
+    }
+    setInput("");
+  };
+
   return (
-    <div className="bg-white w-full rounded-md h-full max-h-full flex flex-col overflow-hidden">
-      {/* header */}
-      <div className="h-12 flex items-center px-3 border-b">
-        <p className="font-semibold text-foreground">First Custom Widget</p>
-      </div>
-      {/*  scrollable container */}
-      <div className="p-4 flex w-full flex-1 flex-col gap-4 overflow-y-auto">
-        <p className="text-foreground">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur
-          perspiciatis commodi veritatis, neque velit eaque maiores, temporibus
-          hic sit excepturi eligendi nostrum! Exercitationem quaerat incidunt
-          debitis, optio modi sint quas.
-        </p>
-        <p className="text-foreground">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur
-          perspiciatis commodi veritatis, neque velit eaque maiores, temporibus
-          hic sit excepturi eligendi nostrum! Exercitationem quaerat incidunt
-          debitis, optio modi sint quas.
-        </p>
-        <p className="text-foreground">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur
-          perspiciatis commodi veritatis, neque velit eaque maiores, temporibus
-          hic sit excepturi eligendi nostrum! Exercitationem quaerat incidunt
-          debitis, optio modi sint quas.
-        </p>
-        <TestFormDialog />
-      </div>
+    <div
+      className="absolute w-screen h-screen flex items-center justify-center bg-cover bg-center"
+      style={{ backgroundImage: "url('/image.png')" }}
+    >
+      {showSplash ? (
+        <div className="absolute inset-0 flex items-center justify-center bg-white text-black text-3xl font-bold">
+          Welcome to UPTIQ AI
+        </div>
+      ) : (
+        <motion.div
+          className="absolute inset-0 bg-white bg-opacity-70 p-6"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
+        >
+          <div className="mx-auto max-w-2xl">
+            <Card className="bg-[#f5f5f5] shadow-md rounded-lg border border-gray-300 p-4">
+              <CardContent>
+                <div className="mb-4">
+                  <Input
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    placeholder="What finanical help do you need?"
+                    className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
+                  />
+                </div>
+                <Button
+                  onClick={sendMessage}
+                  className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition"
+                >
+                  Send
+                </Button>
+              </CardContent>
+            </Card>
+            <div className="mt-4 space-y-2 max-h-64 overflow-y-auto">
+              {messages.map((msg, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.4 }}
+                  className={`p-2 rounded-md text-sm text-gray-800 ${
+                    msg.sender === "user" ? "bg-green-100 text-right" : "bg-gray-200 text-left"
+                  }`}
+                >
+                  {msg.text}
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </motion.div>
+      )}
     </div>
   );
 };
