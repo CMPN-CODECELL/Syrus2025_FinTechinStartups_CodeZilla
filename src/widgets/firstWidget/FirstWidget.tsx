@@ -1,21 +1,15 @@
 import { useState, useEffect, useCallback } from "react";
-import { v4 as uuid } from "uuid";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useSamuelEventListenr } from "@/hooks/useSamuelEventListener";
-import { getSamuelConfig, getSamuelUser } from "@/lib/utils";
-import axios from "axios";
 import "tailwindcss/tailwind.css";
 
 export const UptiqWidget = () => {
   const [showSplash, setShowSplash] = useState(true);
   const [messages, setMessages] = useState<{ text: string; sender: string }[]>([]);
   const [input, setInput] = useState("");
-
-  const config = getSamuelConfig();
-  const user = getSamuelUser();
 
   useEffect(() => {
     setTimeout(() => setShowSplash(false), 3000);
