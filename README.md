@@ -1,3 +1,11 @@
+# Syrus Hackathon
+
+## Topic: FinTech in Startups
+Solution implemented using [Uptiq AI](uptiq.ai).
+
+![CodeZilla_C3_Working](https://github.com/user-attachments/assets/1479385d-e1e9-4577-9a28-08f9509b43c0)
+
+
 ## Challenges Faced
 
 ### 1. Editing Issues in JS Code  
