@@ -1,1 +1,0 @@
-export { UptiqWidget } from "./FirstWidget";
