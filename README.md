@@ -7,8 +7,6 @@ Solution implemented using [Uptiq AI](uptiq.ai).
 
 ![CodeZilla_C3_Working](https://github.com/user-attachments/assets/1479385d-e1e9-4577-9a28-08f9509b43c0)
 
-# AI-Powered Loan Approval & Risk Assessment System
-
 ## Project Overview
 The **AI Loan Approval & Risk Assessment System** is built to revolutionize the loan approval process by integrating AI-driven analytics. The system evaluates loan eligibility by estimating credit scores and assessing financial risk through **Retrieval-Augmented Generation (RAG)**, ensuring precise and data-backed decisions.
 
