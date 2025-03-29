@@ -30,6 +30,12 @@ During the development phase, the team encountered several challenges:
 1. **Optimization of AI Workflow**: Initial attempts using Chain-of-Thought (COT) reasoning resulted in inconsistencies, necessitating refinements in the workflow.
 2. **API Endpoint Identification**: Identifying suitable endpoints for seamless UI functionality required significant redesign efforts.
 
+## Mentorship Advancements
+In the guidamce round, we were suggested to not implement COT, an algorithm we were going with that was not working properly with the uptiq workbench. Following the suggestion, we drew our focus to another implementation and delivered the objectives in a much more efficient manner using a RAG container.
+
+## Final Breakthrough
+After implementing the suggestions, we completed our AI agentic pipeline and integrated a custom agentic layout in uptiq ai. The video of which is available in this repository.
+
 ## Future Enhancements
 The project envisions several improvements to enhance its capabilities:
 - **Advanced AI Decision-Making**: Incorporate **machine learning-driven risk analysis and fraud detection**.
