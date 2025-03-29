@@ -52,3 +52,6 @@ The team faced persistent **network errors** while modifying JavaScript code wit
 
 ### 2. API Limitations for Uptiq.ai  
 The absence of a public **API for Uptiq.ai** posed a significant challenge. The original **UI design had to be reworked**, as integrating the frontend with the AI agent became impractical without a reliable API. This forced the team to rethink and adapt their implementation strategy.
+
+## Project Review Video link 
+https://youtu.be/0Rrptu1yNYI?feature=shared
